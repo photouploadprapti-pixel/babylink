@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { ListingCard } from '@/components/listing-card'
 import { createClient } from '@/lib/supabase/server'
 import type { Listing } from '@/types'
@@ -8,11 +9,13 @@ import type { Listing } from '@/types'
  */
 export default async function DashboardPage() {
   const supabase = await createClient()
+  if (!supabase) redirect('/auth/login')
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return null
+  if (!user) redirect('/auth/login')
 
   const [{ data: profile }, { data: listings }, { count: dealCount }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),

@@ -71,6 +71,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### 6. Deploy on Vercel
+
+In the Vercel project → **Settings → Environment Variables**, add these for Production (and Preview):
+
+| Name | Value |
+|------|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://ysgwarumspeyjnjhuxea.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your Supabase publishable / anon key |
+| `SERPAPI_KEY` | your SerpAPI key |
+| `DATABASE_URL` | pooler connection string (optional for runtime) |
+
+Then **Redeploy**. Without the `NEXT_PUBLIC_SUPABASE_*` vars the homepage can render, but auth, listings, and uploads will not work.
+
 ## How photo auto-fill works
 
 1. Parent uploads a product photo on **List an item**

@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { requireClient } from '@/lib/supabase/server'
 import type {
   DealStatus,
   ListingCondition,
@@ -31,7 +31,7 @@ export interface ListingInput {
  * @param input - Listing fields collected from the form
  */
 export const actionCreateListing = async (input: ListingInput) => {
-  const supabase = await createClient()
+  const supabase = await requireClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -84,7 +84,7 @@ export const actionCreateDeal = async (
   message: string,
   amount?: number | null
 ) => {
-  const supabase = await createClient()
+  const supabase = await requireClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -148,7 +148,7 @@ export const actionUpdateDealStatus = async (
   status: DealStatus,
   adminNotes?: string
 ) => {
-  const supabase = await createClient()
+  const supabase = await requireClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -199,7 +199,7 @@ export const actionUpdateDealStatus = async (
  * Signs the current user out.
  */
 export const actionSignOut = async () => {
-  const supabase = await createClient()
+  const supabase = await requireClient()
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
 }

@@ -8,22 +8,28 @@ import { cn } from '@/lib/utils'
  * Site header with navigation based on auth and role.
  */
 export const SiteHeader = async () => {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  let user: { id: string; email?: string | null } | null = null
   let role: string | null = null
   let fullName: string | null = null
 
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role, full_name')
-      .eq('id', user.id)
-      .single()
-    role = profile?.role ?? null
-    fullName = profile?.full_name ?? null
+  try {
+    const supabase = await createClient()
+    if (supabase) {
+      const { data } = await supabase.auth.getUser()
+      user = data.user
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, full_name')
+          .eq('id', user.id)
+          .single()
+        role = profile?.role ?? null
+        fullName = profile?.full_name ?? null
+      }
+    }
+  } catch (error) {
+    console.error('SiteHeader auth lookup failed', error)
   }
 
   return (

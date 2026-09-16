@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { enrichListingFromImage } from '@/lib/image-enrichment'
-import { createClient } from '@/lib/supabase/server'
+import { requireClient } from '@/lib/supabase/server'
 
 /**
  * Accepts an uploaded listing photo, stores it in Supabase Storage,
@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/server'
  */
 export const POST = async (request: Request) => {
   try {
-    const supabase = await createClient()
+    const supabase = await requireClient()
     const {
       data: { user },
     } = await supabase.auth.getUser()

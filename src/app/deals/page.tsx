@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 import { DealStatusActions } from '@/components/deal-status-actions'
 import { createClient } from '@/lib/supabase/server'
 import { formatMoney, listingTypeLabel } from '@/lib/utils'
@@ -8,11 +9,13 @@ import type { Deal } from '@/types'
  */
 export default async function DealsPage() {
   const supabase = await createClient()
+  if (!supabase) redirect('/auth/login')
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return null
+  if (!user) redirect('/auth/login')
 
   const { data } = await supabase
     .from('deals')

@@ -8,15 +8,22 @@ import type { Listing } from '@/types'
  * Marketing home page with recent listings.
  */
 export default async function HomePage() {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('listings')
-    .select('*')
-    .eq('status', 'active')
-    .order('created_at', { ascending: false })
-    .limit(6)
+  let listings: Listing[] = []
 
-  const listings = (data ?? []) as Listing[]
+  try {
+    const supabase = await createClient()
+    if (supabase) {
+      const { data } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(6)
+      listings = (data ?? []) as Listing[]
+    }
+  } catch (error) {
+    console.error('Home listings fetch failed', error)
+  }
 
   return (
     <div>

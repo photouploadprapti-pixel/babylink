@@ -11,26 +11,33 @@ interface BrowsePageProps {
  */
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const params = await searchParams
-  const supabase = await createClient()
+  let listings: Listing[] = []
 
-  let query = supabase
-    .from('listings')
-    .select('*')
-    .eq('status', 'active')
-    .order('created_at', { ascending: false })
+  try {
+    const supabase = await createClient()
+    if (supabase) {
+      let query = supabase
+        .from('listings')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
 
-  if (params.type && ['sell', 'exchange', 'rent'].includes(params.type)) {
-    query = query.eq('listing_type', params.type)
+      if (params.type && ['sell', 'exchange', 'rent'].includes(params.type)) {
+        query = query.eq('listing_type', params.type)
+      }
+
+      if (params.q) {
+        query = query.or(
+          `title.ilike.%${params.q}%,description.ilike.%${params.q}%,brand.ilike.%${params.q}%`
+        )
+      }
+
+      const { data } = await query
+      listings = (data ?? []) as Listing[]
+    }
+  } catch (error) {
+    console.error('Browse listings fetch failed', error)
   }
-
-  if (params.q) {
-    query = query.or(
-      `title.ilike.%${params.q}%,description.ilike.%${params.q}%,brand.ilike.%${params.q}%`
-    )
-  }
-
-  const { data } = await query
-  const listings = (data ?? []) as Listing[]
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">

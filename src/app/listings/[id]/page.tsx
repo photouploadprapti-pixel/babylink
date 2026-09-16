@@ -15,6 +15,7 @@ interface ListingDetailPageProps {
 export default async function ListingDetailPage({ params }: ListingDetailPageProps) {
   const { id } = await params
   const supabase = await createClient()
+  if (!supabase) notFound()
 
   const { data: listing } = await supabase
     .from('listings')
@@ -76,9 +77,7 @@ export default async function ListingDetailPage({ params }: ListingDetailPagePro
         <div className="rounded-2xl border border-teal-900/10 bg-white/70 p-4">
           <p className="text-sm text-teal-900/60">Asking</p>
           <p className="font-display text-3xl text-teal-950">
-            {item.listing_type === 'exchange'
-              ? 'Exchange'
-              : formatMoney(item.price)}
+            {item.listing_type === 'exchange' ? 'Exchange' : formatMoney(item.price)}
           </p>
         </div>
 

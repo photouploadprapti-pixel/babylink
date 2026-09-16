@@ -19,6 +19,8 @@ export const metadata: Metadata = {
     'Sell, exchange, or rent baby products with other parents. Photo upload with Google reverse image search auto-fills your listing.',
 }
 
+export const dynamic = 'force-dynamic'
+
 /**
  * Root application layout.
  */
