@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BabyLink
 
-## Getting Started
+Peer-to-peer baby products sharing platform. Parents can **sell**, **exchange**, or **rent** gear. Deals stay on the platform so admins can oversee every transaction. Listing photos are stored in **Supabase Storage**, and uploads trigger a **Google reverse image search** flow to auto-fill listing fields.
 
-First, run the development server:
+## Features
+
+- Parent signup / login (Supabase Auth)
+- Listings: sell · exchange · rent
+- Photo upload → Supabase Storage (`listing-photos`)
+- Reverse image enrichment (Google Vision Web Detection or SerpAPI Google Lens)
+- Deal requests with status workflow
+- Admin dashboard of all transactions
+
+## Setup
+
+### 1. Environment
+
+Copy `.env.example` to `.env.local` and fill values:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Required:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (publishable or legacy anon key)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Recommended for reverse image auto-fill (use at least one):
 
-## Learn More
+- `GOOGLE_VISION_API_KEY` — [Cloud Vision API](https://cloud.google.com/vision)
+- `SERPAPI_KEY` — [SerpAPI Google Lens](https://serpapi.com/google-lens-api)
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Database + storage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+In the Supabase Dashboard → **SQL Editor**, run the full script:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[`supabase/schema.sql`](./supabase/schema.sql)
 
-## Deploy on Vercel
+This creates `profiles`, `listings`, `deals`, RLS policies, and the public `listing-photos` storage bucket.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If your network can reach the database (IPv6 or pooler), you can also run:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+node scripts/apply-schema.js
+```
+
+### 3. Auth settings
+
+In Supabase → Authentication:
+
+- Enable Email provider
+- For local testing, you may disable “Confirm email”
+
+### 4. Promote an admin
+
+After signing up as a parent:
+
+```sql
+update public.profiles
+set role = 'admin'
+where email = 'you@example.com';
+```
+
+### 5. Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## How photo auto-fill works
+
+1. Parent uploads a product photo on **List an item**
+2. Image is stored in Supabase Storage
+3. `/api/enrich-image` runs reverse image search:
+   - **Google Vision** `WEB_DETECTION` + labels (preferred when `GOOGLE_VISION_API_KEY` is set)
+   - else **SerpAPI Google Lens** when `SERPAPI_KEY` is set
+   - else a local heuristic fallback
+4. Suggested title, description, category, brand, and age range are written into the form
+
+## Stack
+
+- Next.js (App Router) + TypeScript + Tailwind
+- Supabase Auth, Postgres, Storage
+- Server Actions for listings and deals
