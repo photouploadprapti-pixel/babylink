@@ -1,4 +1,4 @@
--- BabyLink schema: profiles, listings, deals, storage
+-- LantaShare schema: profiles, listings, deals, storage
 
 create extension if not exists "pgcrypto";
 

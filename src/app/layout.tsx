@@ -14,7 +14,7 @@ const body = Source_Sans_3({
 })
 
 export const metadata: Metadata = {
-  title: 'BabyLink — Peer-to-peer baby gear sharing',
+  title: 'LantaShare — Peer-to-peer baby gear sharing',
   description:
     'Sell, exchange, or rent baby products with other parents. Photo upload with Google reverse image search auto-fills your listing.',
 }
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-teal-900/10 px-4 py-8 text-center text-sm text-teal-900/60">
-          BabyLink · Parents sharing gear, one listing at a time
+          LantaShare · Parents sharing gear, one listing at a time
         </footer>
       </body>
     </html>

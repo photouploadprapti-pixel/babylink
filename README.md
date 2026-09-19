@@ -1,4 +1,4 @@
-# BabyLink
+# LantaShare
 
 Peer-to-peer baby products sharing platform. Parents can **sell**, **exchange**, or **rent** gear. Deals stay on the platform so admins can oversee every transaction. Listing photos are stored in **Supabase Storage**, and uploads trigger a **Google reverse image search** flow to auto-fill listing fields.
 

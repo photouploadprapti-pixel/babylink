@@ -66,7 +66,7 @@ export default function SignupPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <h1 className="text-center font-display text-4xl text-teal-950">Join BabyLink</h1>
+      <h1 className="text-center font-display text-4xl text-teal-950">Join LantaShare</h1>
       <p className="mt-2 text-center text-teal-900/65">
         Create a parent account to list and request baby gear deals.
       </p>

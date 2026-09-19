@@ -39,7 +39,7 @@ export const SiteHeader = async () => {
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-800 text-cream">
             <Baby className="h-5 w-5" />
           </span>
-          BabyLink
+          LantaShare
         </Link>
 
         <nav className="hidden items-center gap-5 text-sm text-teal-950/80 md:flex">

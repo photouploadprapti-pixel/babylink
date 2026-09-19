@@ -50,7 +50,7 @@ export const DealRequestForm = ({ listingId, listingType, price }: DealRequestFo
     <form onSubmit={onSubmit} className="space-y-3 rounded-2xl border border-teal-900/10 bg-white/70 p-4">
       <h3 className="font-medium text-teal-950">Request a {listingType} deal</h3>
       <p className="text-sm text-teal-900/65">
-        The deal stays on BabyLink so admins can see the full transaction history.
+        The deal stays on LantaShare so admins can see the full transaction history.
       </p>
       {listingType !== 'exchange' ? (
         <input

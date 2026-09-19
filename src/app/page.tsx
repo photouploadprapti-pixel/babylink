@@ -37,7 +37,7 @@ export default async function HomePage() {
         />
         <div className="relative mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-24 text-[#f7f3eb]">
           <p className="animate-rise font-display text-5xl leading-none tracking-tight md:text-7xl">
-            BabyLink
+            LantaShare
           </p>
           <h1 className="animate-rise mt-4 max-w-2xl text-2xl font-medium md:text-3xl" style={{ animationDelay: '80ms' }}>
             Peer-to-peer baby gear for parents who share.
@@ -78,7 +78,7 @@ export default async function HomePage() {
           {
             icon: ShieldCheck,
             title: 'Deals stay visible',
-            text: 'Every transaction happens on BabyLink so admins can oversee the full trail.',
+            text: 'Every transaction happens on LantaShare so admins can oversee the full trail.',
           },
         ].map((item, index) => (
           <div
@@ -113,7 +113,7 @@ export default async function HomePage() {
           <div className="rounded-3xl border border-dashed border-teal-900/20 bg-white/50 px-6 py-16 text-center">
             <p className="font-display text-2xl text-teal-950">No listings yet</p>
             <p className="mt-2 text-sm text-teal-900/65">
-              Be the first parent to share gear on BabyLink.
+              Be the first parent to share gear on LantaShare.
             </p>
             <Link
               href="/listings/new"
