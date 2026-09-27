@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { CityCombobox } from '@/components/city-combobox'
+import { PasswordField } from '@/components/password-field'
 import { createClient } from '@/lib/supabase/client'
 import { THAILAND_CITIES } from '@/lib/thailand-cities'
 import { cn } from '@/lib/utils'
@@ -136,13 +137,12 @@ export default function SignupPage() {
         </label>
         <label className="block space-y-1 text-sm">
           <span>Password</span>
-          <input
+          <PasswordField
             required
-            type="password"
             minLength={6}
+            autoComplete="new-password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
+            onChange={setPassword}
           />
         </label>
         <label className="block space-y-1 text-sm">

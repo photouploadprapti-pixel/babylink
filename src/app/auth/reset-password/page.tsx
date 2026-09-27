@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { PasswordField } from '@/components/password-field'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 
@@ -109,24 +110,22 @@ export default function ResetPasswordPage() {
         >
           <label className="block space-y-1 text-sm">
             <span>New password</span>
-            <input
+            <PasswordField
               required
-              type="password"
               minLength={6}
+              autoComplete="new-password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
+              onChange={setPassword}
             />
           </label>
           <label className="block space-y-1 text-sm">
             <span>Confirm password</span>
-            <input
+            <PasswordField
               required
-              type="password"
               minLength={6}
+              autoComplete="new-password"
               value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
+              onChange={setConfirmPassword}
             />
           </label>
           {error ? <p className="text-sm text-red-700">{error}</p> : null}

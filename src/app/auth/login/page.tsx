@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
+import { PasswordField } from '@/components/password-field'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 
@@ -50,13 +51,7 @@ const LoginForm = () => {
       </label>
       <label className="block space-y-1 text-sm">
         <span>Password</span>
-        <input
-          required
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
-        />
+        <PasswordField required value={password} onChange={setPassword} />
       </label>
       <p className="text-right text-sm">
         <Link href="/auth/forgot-password" className="font-medium text-teal-800 hover:underline">
