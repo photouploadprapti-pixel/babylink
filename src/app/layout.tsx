@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Fraunces, Source_Sans_3 } from 'next/font/google'
+import { RecoveryRedirect } from '@/components/recovery-redirect'
 import { SiteHeader } from '@/components/site-header'
 import './globals.css'
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <RecoveryRedirect />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-teal-900/10 px-4 py-8 text-center text-sm text-teal-900/60">

@@ -58,6 +58,11 @@ const LoginForm = () => {
           className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
         />
       </label>
+      <p className="text-right text-sm">
+        <Link href="/auth/forgot-password" className="font-medium text-teal-800 hover:underline">
+          Forgot password?
+        </Link>
+      </p>
       {error ? <p className="text-sm text-red-700">{error}</p> : null}
       <button
         type="submit"

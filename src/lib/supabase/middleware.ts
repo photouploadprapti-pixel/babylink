@@ -35,6 +35,12 @@ export const updateSession = async (request: NextRequest) => {
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
+
+  if (path === '/' && request.nextUrl.searchParams.has('code')) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/auth/reset-password'
+    return NextResponse.redirect(redirectUrl)
+  }
   const isAuthRoute = path.startsWith('/auth')
   const isProtected =
     path.startsWith('/dashboard') ||
