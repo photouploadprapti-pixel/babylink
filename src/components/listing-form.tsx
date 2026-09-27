@@ -7,6 +7,7 @@ import type { ListingEnrichment, ListingCondition, ListingType } from '@/types'
 import { BABY_CATEGORIES } from '@/types'
 import { cn } from '@/lib/utils'
 import { actionCreateListing } from '@/actions/listings'
+import { CityCombobox } from '@/components/city-combobox'
 
 /**
  * Listing form with photo upload and reverse-image auto-fill.
@@ -220,13 +221,8 @@ export const ListingForm = () => {
             placeholder="e.g. 0-6 months"
           />
         </Field>
-        <Field label="City">
-          <input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className={inputClass}
-            placeholder="Your city"
-          />
+        <Field label="City in Thailand">
+          <CityCombobox value={city} onChange={setCity} className={inputClass} />
         </Field>
         <Field label="Listing type">
           <select

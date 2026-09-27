@@ -84,12 +84,13 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, full_name, role)
+  insert into public.profiles (id, email, full_name, role, city)
   values (
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
-    coalesce(new.raw_user_meta_data->>'role', 'parent')
+    coalesce(new.raw_user_meta_data->>'role', 'parent'),
+    coalesce(new.raw_user_meta_data->>'city', '')
   );
   return new;
 end;

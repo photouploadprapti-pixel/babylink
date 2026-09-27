@@ -3,11 +3,27 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { CityCombobox } from '@/components/city-combobox'
 import { createClient } from '@/lib/supabase/client'
+import { THAILAND_CITIES } from '@/lib/thailand-cities'
 import { cn } from '@/lib/utils'
 
 /**
- * Parent signup page.
+ * Turns low-level auth network errors into a readable message.
+ * @param message - Error text from Supabase or the browser
+ */
+const authErrorMessage = (message: string) => {
+  if (message === 'Failed to fetch' || message.includes('NetworkError')) {
+    return (
+      'Could not reach Supabase. The linked project is offline or was deleted, ' +
+      'so the account was not created. Restore the project or add a new project URL and key.'
+    )
+  }
+  return message
+}
+
+/**
+ * Parent signup page. Creates a Supabase auth user and stores the profile city.
  */
 export default function SignupPage() {
   const router = useRouter()
@@ -20,48 +36,72 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
 
   /**
-   * Registers a new parent account.
+   * Registers a new parent account and saves name plus city on the profile.
+   * @param event - Signup form submit event
    */
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    setLoading(true)
     setError('')
     setInfo('')
 
-    const supabase = createClient()
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: 'parent',
+    const knownCity = THAILAND_CITIES.find(
+      (item) => item.toLowerCase() === city.trim().toLowerCase()
+    )
+    if (!knownCity) {
+      setError('Choose a city in Thailand from the suggestions.')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const supabase = createClient()
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/login`,
+          data: {
+            full_name: fullName,
+            role: 'parent',
+            city: knownCity,
+          },
         },
-      },
-    })
+      })
 
-    if (signUpError) {
+      if (signUpError) {
+        setLoading(false)
+        setError(authErrorMessage(signUpError.message))
+        return
+      }
+
+      if (data.user && data.session) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ full_name: fullName, city: knownCity })
+          .eq('id', data.user.id)
+
+        if (profileError) {
+          setLoading(false)
+          setError(profileError.message)
+          return
+        }
+      }
+
       setLoading(false)
-      setError(signUpError.message)
-      return
+
+      if (!data.session) {
+        setInfo('Account created. Check your email to confirm it, then log in.')
+        return
+      }
+
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err) {
+      setLoading(false)
+      const message = err instanceof Error ? err.message : 'Signup failed'
+      setError(authErrorMessage(message))
     }
-
-    if (data.user) {
-      await supabase
-        .from('profiles')
-        .update({ full_name: fullName, city })
-        .eq('id', data.user.id)
-    }
-
-    setLoading(false)
-
-    if (!data.session) {
-      setInfo('Check your email to confirm your account, then log in.')
-      return
-    }
-
-    router.push('/dashboard')
-    router.refresh()
   }
 
   return (
@@ -80,7 +120,7 @@ export default function SignupPage() {
           <input
             required
             value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            onChange={(event) => setFullName(event.target.value)}
             className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
           />
         </label>
@@ -90,7 +130,7 @@ export default function SignupPage() {
             required
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
             className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
           />
         </label>
@@ -101,17 +141,13 @@ export default function SignupPage() {
             type="password"
             minLength={6}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
             className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
           />
         </label>
         <label className="block space-y-1 text-sm">
-          <span>City</span>
-          <input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="w-full rounded-xl border border-teal-900/15 px-3 py-2.5"
-          />
+          <span>City in Thailand</span>
+          <CityCombobox required value={city} onChange={setCity} />
         </label>
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
         {info ? <p className="text-sm text-teal-800">{info}</p> : null}
